@@ -1,5 +1,13 @@
 # auditable-crud
 
+[![CI](https://github.com/alfredomartinm/auditable-crud/actions/workflows/ci.yml/badge.svg?branch=master)](https://github.com/alfredomartinm/auditable-crud/actions/workflows/ci.yml?query=branch%3Amaster)
+
+## About
+
+This is an experimental/lab project that showcases auditable automation and standards adoption for a Spring Boot application. It is intended as a reference for exploring CI pipelines, dependency management, and repository housekeeping practices—not as a production-ready service.
+
+> **AI-assisted maintenance:** routine maintenance tasks in this repository (such as dependency updates, housekeeping checks, and documentation improvements) are AI-assisted.
+
 ## Automation & Standards
 
 This repository adopts shared standards from [`alfredomartinm/repo-standards@v1`](https://github.com/alfredomartinm/repo-standards).
