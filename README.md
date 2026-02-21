@@ -1,5 +1,13 @@
 # auditable-crud
 
+[![CI](https://github.com/alfredomartinm/auditable-crud/actions/workflows/ci.yml/badge.svg?branch=master)](https://github.com/alfredomartinm/auditable-crud/actions/workflows/ci.yml)
+
+## Intent
+
+This is an experimental/lab repository used to explore and showcase **auditable automation** and standards adoption for Java/Spring Boot projects. Its primary goal is to demonstrate how a project can be kept healthy with minimal manual effort by combining reusable CI workflows, automated dependency management, and lightweight housekeeping tooling.
+
+> **AI-assisted maintenance:** Parts of this repository's documentation and configuration are drafted or refined with AI assistance. All changes are reviewed and committed by the repository owner.
+
 ## Automation & Standards
 
 This repository adopts shared standards from [`alfredomartinm/repo-standards@v1`](https://github.com/alfredomartinm/repo-standards).
