@@ -1,53 +1,53 @@
 package io.alfredux.spring.audit.auditablecrud.configuration;
 
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.provisioning.InMemoryUserDetailsManager;
+import org.springframework.security.web.SecurityFilterChain;
 
 import static org.springframework.http.HttpMethod.*;
 
 @Configuration
-public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
+public class SecurityConfiguration {
 
-    @Override
-    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+    @Bean
+    public UserDetailsService users() {
+    UserDetails user = User.withUsername("user")
+        .password("{noop}password")
+        .roles("USER", "ADMIN")
+        .build();
 
-        auth.inMemoryAuthentication()
-                .withUser("user")
-                .password("{noop}password")
-                .roles("USER", "ADMIN")
-                .and()
-                .withUser("admin")
-                .password("{noop}password")
-                .roles("USER", "ADMIN");
+    UserDetails admin = User.withUsername("admin")
+        .password("{noop}password")
+        .roles("USER", "ADMIN")
+        .build();
 
+    return new InMemoryUserDetailsManager(user, admin);
     }
 
-    @Override
-    protected void configure(HttpSecurity http) throws Exception {
+    @Bean
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+    http
+        .authorizeHttpRequests(authorize -> authorize
+            .requestMatchers("/", "/h2-console/**").permitAll()
+            .requestMatchers(GET, "/customers/**").hasRole("USER")
+            .requestMatchers(POST, "/customers").hasRole("ADMIN")
+            .requestMatchers(PUT, "/customers/**").hasRole("ADMIN")
+            .requestMatchers(PATCH, "/customers/**").hasRole("ADMIN")
+            .requestMatchers(DELETE, "/customers/**").hasRole("ADMIN")
+            .anyRequest().authenticated()
+        )
+        .httpBasic(httpBasic -> {
+        })
+        .formLogin(formLogin -> formLogin.disable())
+        .csrf(csrf -> csrf.disable())
+        .headers(headers -> headers.frameOptions(frameOptions -> frameOptions.disable()));
 
-        http.authorizeRequests()
-                    .antMatchers("/").permitAll()
-                .and()
-                .authorizeRequests()
-                    .antMatchers("/h2-console/**").permitAll();
-
-        http.httpBasic()
-                .and()
-                .authorizeRequests()
-                .antMatchers(GET, "/customers/**").hasRole("USER")
-                .antMatchers(POST, "/customers").hasRole("ADMIN")
-                .antMatchers(PUT, "/customers/**").hasRole("ADMIN")
-                .antMatchers(PATCH, "/customers/**").hasRole("ADMIN")
-                .antMatchers(DELETE, "/customers/**").hasRole("ADMIN")
-                .and()
-                .csrf().disable()
-                .formLogin().disable();
-
-        http.csrf().disable();
-        http.headers().frameOptions().disable();
-
+    return http.build();
     }
 }
