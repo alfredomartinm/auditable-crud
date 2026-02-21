@@ -1,0 +1,16 @@
+name: CI
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+    branches: [master]
+
+permissions:
+  contents: read
+
+jobs:
+  ci:
+    uses: alfredomartinm/repo-standards/.github/workflows/reusable-ci-maven.yml@v1
+    with:
+      java-version: '21'

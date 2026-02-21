@@ -1,0 +1,38 @@
+name: Housekeeping
+
+on:
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: 'dry-run (report only) or apply (open a PR with safe fixes)'
+        required: false
+        default: 'dry-run'
+        type: choice
+        options:
+          - dry-run
+          - apply
+  # Monthly schedule – runs in dry-run mode; switch to apply manually via workflow_dispatch.
+  schedule:
+    - cron: '0 3 1 * *'
+
+jobs:
+  housekeeping-dry-run:
+    # Runs on schedule (always dry-run) or when mode is dry-run
+    if: github.event_name == 'schedule' || github.event.inputs.mode == 'dry-run'
+    permissions:
+      contents: read
+    uses: alfredomartinm/repo-standards/.github/workflows/reusable-housekeeping-springboot-maven.yml@v1
+    with:
+      mode: 'dry-run'
+      target_branch: 'master'
+
+  housekeeping-apply:
+    # Only runs when explicitly triggered with mode=apply
+    if: github.event_name == 'workflow_dispatch' && github.event.inputs.mode == 'apply'
+    permissions:
+      contents: write
+      pull-requests: write
+    uses: alfredomartinm/repo-standards/.github/workflows/reusable-housekeeping-springboot-maven.yml@v1
+    with:
+      mode: 'apply'
+      target_branch: 'master'
